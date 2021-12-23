@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// check if user is authentificated
+// check if user is authentificated, when for example he reload page
 module.exports = function (req, res, next) { 
   if (req.method === "OPTIONS") next();
   

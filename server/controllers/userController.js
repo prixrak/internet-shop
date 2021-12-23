@@ -1,3 +1,4 @@
+require("dotenv").config();
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt'); // для шифрування
 const jwt = require('jsonwebtoken'); // для того, щоб створювати токен коричстувача, щоб можна було зрозуміти чи користувач авторизований

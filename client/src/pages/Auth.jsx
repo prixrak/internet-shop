@@ -1,17 +1,35 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Form } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import { NavLink, useLocation } from "react-router-dom";
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from "../utils/consts";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
+import { registration, login } from './../http/userAPI';
+import { useNavigate } from 'react-router-dom';
 
 const Auth = observer(() => {
   const { user } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
+  const navigate = useNavigate();
+  const [email, setEmail] = useState(''); 
+  const [password, setPassword] = useState('');
+
+  const auth = async () => {
+    try {
+      let userAuth;
+      if (isLogin) userAuth = await login(email, password);
+      else userAuth = await registration(email, password);
+      user.setUser(userAuth);
+      user.setIsAuth(true);
+      navigate(SHOP_ROUTE);
+    } catch (e) {
+      alert(e.response.data.message);
+    }
+  }
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
@@ -23,11 +41,16 @@ const Auth = observer(() => {
           <Form.Control
             className="mt-3"
             placeholder="Введіть ваш мейл..."
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
           />
           <Form.Control
             className="mt-3"
             placeholder="Введіть ваш пароль..."
             type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
           />
           <Row className="d-flex justify-content-between mt-3 pl-3 pr-3">
             {isLogin ?
@@ -41,6 +64,7 @@ const Auth = observer(() => {
             }
             <Button
               variant={"outline-success"}
+              onClick={auth}
             >
               {isLogin ? 'Ввійти' : 'Реєстрація'}
             </Button>
