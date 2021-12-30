@@ -11,20 +11,19 @@ import { registration, login } from './../http/userAPI';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = observer(() => {
-  const { user } = useContext(Context);
+  const { userStore } = useContext(Context);
   const location = useLocation();
-  const isLogin = location.pathname === LOGIN_ROUTE;
+  const isLoginRoute = location.pathname === LOGIN_ROUTE;
   const navigate = useNavigate();
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
 
   const auth = async () => {
     try {
-      let userAuth;
-      if (isLogin) userAuth = await login(email, password);
-      else userAuth = await registration(email, password);
-      user.setUser(userAuth);
-      user.setIsAuth(true);
+      let user;
+      if (isLoginRoute) user = await login(email, password);
+      else user = await registration(email, password);
+      userStore.setCurrentUser(user);
       navigate(SHOP_ROUTE);
     } catch (e) {
       alert(e.response.data.message);
@@ -36,7 +35,7 @@ const Auth = observer(() => {
       style={{ height: window.innerHeight - 80 }}
     >
       <Card style={{ width: 600 }} className="p-5">
-        <h2 className="m-auto">{isLogin ? 'Авторизація' : "Реєстрація"}</h2>
+        <h2 className="m-auto">{isLoginRoute ? 'Авторизація' : "Реєстрація"}</h2>
         <Form className="d-flex flex-column">
           <Form.Control
             className="mt-3"
@@ -53,7 +52,7 @@ const Auth = observer(() => {
             onChange={e => setPassword(e.target.value)}
           />
           <Row className="d-flex justify-content-between mt-3 pl-3 pr-3">
-            {isLogin ?
+            {isLoginRoute ?
               <div>
                 Немає аккаунта? <NavLink to={REGISTRATION_ROUTE}>Зареєструйся!</NavLink>
               </div>
@@ -66,7 +65,7 @@ const Auth = observer(() => {
               variant={"outline-success"}
               onClick={auth}
             >
-              {isLogin ? 'Ввійти' : 'Реєстрація'}
+              {isLoginRoute ? 'Ввійти' : 'Реєстрація'}
             </Button>
           </Row>
         </Form>

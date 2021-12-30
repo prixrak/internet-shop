@@ -6,10 +6,14 @@ import Shop from './pages/Shop';
 import Device from './pages/Device';
 import Auth from './pages/Auth';
 
-export const authRoutes = [
+export const authAdminRoutes = [
   {path: ADMIN_ROUTE, component: Admin},
+];
+
+export const authRoutes = [
   {path: BASKET_ROUTE, component: Basket},
 ];
+
 export const publicRoutes = [
   {path: LOGIN_ROUTE, component: Auth},
   {path: REGISTRATION_ROUTE, component: Auth},

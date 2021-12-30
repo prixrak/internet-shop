@@ -6,6 +6,7 @@ import TypeBar from './../components/TypeBar';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
 import { fetchBrands, fetchDevices, fetchTypes } from '../http/deviceAPI';
+import Pages from '../components/Pages';
 
 const Shop = observer(() => {
   const {device} = useContext(Context);
@@ -13,17 +14,15 @@ const Shop = observer(() => {
   useEffect(() => {
     fetchTypes().then(data => device.setTypes(data));
     fetchBrands().then(data => device.setBrands(data));
-    fetchDevices().then(data => {
-      device.setDevices(data.rows)
-    });
   }, []);
 
-  // useEffect(() => {
-  //   fetchDevices(device.selectedType.id, device.selectedBrand.id, device.page, 2).then(data => {
-  //     device.setDevices(data.rows)
-  //     device.setTotalCount(data.count)
-  //   })
-  // }, [device.page, device.selectedType, device.selectedBrand,])
+  useEffect(() => {
+    fetchDevices(device.selectedType.id, device.selectedBrand.id, device.page, device.limit).then(data => {
+      device.setDevices(data.rows);
+      device.setTotalCount(data.count);
+    });
+  }, [device.page, device.selectedType, device.selectedBrand]);
+
   return (
     <Container>
       <Row className="mt-2">
@@ -33,6 +32,7 @@ const Shop = observer(() => {
         <Col md={9}>
           <BrandBar />
           <DeviceList />
+          <Pages />
         </Col>
       </Row>
     </Container>
