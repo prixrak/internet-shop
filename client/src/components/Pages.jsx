@@ -10,7 +10,7 @@ const Pages = observer(() => {
   for (let i = 0; i < pageCount; i++) pages.push(i + 1);
 
   return (
-    <Pagination className='mt-5'>
+    <Pagination className='mt-4'>
       {pages.map(page => 
         <Pagination.Item 
           activeLabel = "" // to delete signature of (current)

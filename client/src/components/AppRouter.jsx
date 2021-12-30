@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Context } from '../index';
-import { SHOP_ROUTE } from '../utils/consts';
+import { ADMIN_ROLE, SHOP_ROUTE } from '../utils/consts';
 import { authRoutes, publicRoutes, authAdminRoutes } from './../routes';
 import {observer} from 'mobx-react-lite';
 
@@ -20,7 +20,7 @@ const AppRouter = observer(() => {
         <Route key={route.path} path={route.path} element={<route.component />} />)
       }
       { 
-        userStore?.currentUser?.role === 'ADMIN' &&
+        userStore?.currentUser?.role === ADMIN_ROLE &&
         authAdminRoutes.map((route) => 
         <Route key={route.path} path={route.path} element={<route.component />} />)
       }
