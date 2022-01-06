@@ -2,10 +2,7 @@ require("dotenv").config();
 const ApiError = require('../error/ApiError');
 const bcrypt = require('bcrypt'); // для шифрування
 const jwt = require('jsonwebtoken'); // для того, щоб створювати токен коричстувача, щоб можна було зрозуміти чи користувач авторизований
-const {
-  User,
-  Basket
-} = require('../models/models');
+const { User, Basket } = require('../models/models');
 
 const generateJwt = (id, email, role) => {
   return jwt.sign({
@@ -42,9 +39,11 @@ class UserController {
       role,
       password: hashPassword
     });
+
     const basket = await Basket.create({
       userId: user.id
     });
+
     const token = generateJwt(user.id, user.email, user.role);
     return res.json({
       token
@@ -72,7 +71,7 @@ class UserController {
     });
   }
 
-  async check(req, res, next) {
+  async check(req, res, next) { // req.user setted in middleware auth
     const token = generateJwt(req.user.id, req.user.email, req.user.role);
     return res.json({
       token

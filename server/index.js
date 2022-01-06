@@ -1,8 +1,8 @@
-require('dotenv').config();
+require('dotenv').config(); // for use of .env file consts
 const express = require('express');
-const sequelize = require('./db');
-const models = require('./models/models');
-const cors = require('cors');
+const sequelize = require('./db'); // get sequelize obj with settings of DB
+const models = require('./models/models'); // get models of DB
+const cors = require('cors'); // enable cors for crosorigin requests
 const fileUpload = require('express-fileupload');
 const router = require('./routes/index'); 
 const errorHandler = require('./middleware/ErrorHandlingMiddleware');
@@ -19,10 +19,6 @@ app.use('/api', router);
 
 // must be last one
 app.use(errorHandler);
-
-app.get('/', (req, res) => {
-  res.status(200).json({message: 'WORKING'});
-});
 
 const start = async () => {
   try {
