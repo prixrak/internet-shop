@@ -1,11 +1,8 @@
-import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Context } from '..';
 import { Pagination } from 'react-bootstrap';
 
-const Pages = observer(() => {
-  const { device } = useContext(Context);
-  const pageCount = Math.ceil(device.totalCount / device.limit)
+const Pages = observer(({store}) => {
+  const pageCount = Math.ceil(store.totalCount / store.limit)
   const pages = []
   for (let i = 0; i < pageCount; i++) pages.push(i + 1);
 
@@ -15,8 +12,8 @@ const Pages = observer(() => {
         <Pagination.Item 
           activeLabel = "" // to delete signature of (current)
           key={page}
-          active={device.page === page}
-          onClick={() => device.setPage(page)}
+          active={store.page === page}
+          onClick={() => store.setPage(page)}
         >
           {page}
         </Pagination.Item>

@@ -1,29 +1,39 @@
-const { BasketDevice, User } = require('../models/models');
+const { BasketDevice, User, Device } = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class BasketController {
-  async getBasket(req, res) {
-    const id = req.user.id;
-    const basket = await User.findOne(
+  async addDeviceToBasket(req, res) {
+    const {userId, deviceId} = req.body; // get obj with data from req.body
+    const basketDevice = await BasketDevice.findOrCreate(
       {
-        where: {id}
+        where: {
+          userId,
+          deviceId
+        }
       },
     );
-    return res.json(basket);
+    return res.json(basketDevice);
   }
 
-  // async getBasketDevices(req, res) {
-  //   const id = req.user.id;
-  //   const basket = await Basket.findOne(
-  //     {
-  //       where: {
-  //         userId: id,
-  //         basketId: 
-  //       }
-  //     },
-  //   );
-  //   return res.json(basket);
-  // }
+  async getBasketDevices(req, res) {
+    const userId = req.user.id;
+    
+    let {limit, page} = req.query;
+    page = page || 1;
+    limit = limit || 10;
+    let offset = page * limit - limit;  
+
+    const basketDevices = await BasketDevice.findAndCountAll({where: {userId}, limit: parseInt(limit), offset: parseInt(offset)});
+
+    const devices = {count: basketDevices.count, rows: []};
+    console.log(basketDevices);
+    for (const basketDevice of basketDevices.rows) {
+      let device = await Device.findOne({where: {id: basketDevice.deviceId}});
+      devices.rows.push(device);
+    }
+
+    return res.json(devices);
+  }
 }
 
 module.exports = new BasketController();

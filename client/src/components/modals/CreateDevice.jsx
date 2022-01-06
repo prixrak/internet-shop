@@ -7,15 +7,15 @@ import { fetchBrands, fetchTypes } from '../../http/deviceAPI';
 import { createDevice } from './../../http/deviceAPI';
 
 const CreateDevice = observer(({ show, onHide }) => {
-  const { device } = useContext(Context);
+  const { deviceStore, filterStore } = useContext(Context);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
-    fetchTypes().then(data => device.setTypes(data))
-    fetchBrands().then(data => device.setBrands(data))
+    fetchTypes().then(types => filterStore.setTypes(types))
+    fetchBrands().then(brands => filterStore.setBrands(brands))
   }, []);
 
   const addInfo = () => {
@@ -39,8 +39,8 @@ const CreateDevice = observer(({ show, onHide }) => {
     formData.append('name', name);
     formData.append('price', `${price}`);
     formData.append('img', file);
-    formData.append('brandId', device.selectedBrand.id);
-    formData.append('typeId', device.selectedType.id);
+    formData.append('brandId', filterStore.selectedBrand.id);
+    formData.append('typeId', filterStore.selectedType.id);
     formData.append('info', JSON.stringify(info));
     createDevice(formData).then(data => onHide());
   }
@@ -59,11 +59,11 @@ const CreateDevice = observer(({ show, onHide }) => {
       <Modal.Body>
         <Form>
           <Dropdown className="mt-2 mb-2">
-            <Dropdown.Toggle>{device.selectedType.name || "Виберіть тип"}</Dropdown.Toggle>
+            <Dropdown.Toggle>{deviceStore.selectedType.name || "Виберіть тип"}</Dropdown.Toggle>
             <Dropdown.Menu>
-              {device.types.map(type =>
+              {deviceStore.types.map(type =>
                 <Dropdown.Item
-                  onClick={() => device.setSelectedType(type)}
+                  onClick={() => deviceStore.setSelectedType(type)}
                   key={type.id}
                 >
                   {type.name}
@@ -72,11 +72,11 @@ const CreateDevice = observer(({ show, onHide }) => {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown className="mt-2 mb-2">
-            <Dropdown.Toggle>{device.selectedBrand.name || "Виберіть бренд"}</Dropdown.Toggle>
+            <Dropdown.Toggle>{deviceStore.selectedBrand.name || "Виберіть бренд"}</Dropdown.Toggle>
             <Dropdown.Menu>
-              {device.brands.map(brand =>
+              {deviceStore.brands.map(brand =>
                 <Dropdown.Item
-                  onClick={() => device.setSelectedBrand(brand)}
+                  onClick={() => deviceStore.setSelectedBrand(brand)}
                   key={brand.id}
                 >
                   {brand.name}
