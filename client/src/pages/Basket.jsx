@@ -12,12 +12,12 @@ const Basket = observer(() => {
   const {basketStore, filterStore} = useContext(Context);
 
   const [fetchBasketDevicesHook, loading] =  useFetching(() => 
-  fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit)
-  .then(data => {
-    basketStore.setTotalCount(data.count);
-    basketStore.setDevices(data.rows);
-  })
-);
+    fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit)
+    .then(data => {
+      basketStore.setTotalCount(data.count);
+      basketStore.setDevices(data.rows);
+    })
+  );
 
   useEffect(() => {
     fetchBasketDevicesHook();

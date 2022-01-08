@@ -17,7 +17,7 @@ const App = observer(() => {
       userStore.setCurrentUser(user);
     })
     .finally(() => setLoading(false))
-    .catch((error) => console.log());
+    .catch(() => userStore.setCurrentUser(null));
   }, []);
 
   // set loading spinner, when get data we return navbar and pages routes

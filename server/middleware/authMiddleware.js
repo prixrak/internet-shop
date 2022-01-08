@@ -6,8 +6,7 @@ module.exports = function (req, res, next) {
   
   try {
     const token = req.headers.authorization.split(' ')[1]; // typeOfToken tokenfdskjfnsdlkfdskflds
-    if (!token) return res.status(401).json({message: "Не авторизований"});
-    
+    if (token == 'null') return res.status(401).json({message: "Не авторизований"});
     const decoded = jwt.verify(token, process.env.SECRET_KEY); // decode token by secret key
     req.user = decoded;
     next();

@@ -24,9 +24,9 @@ const DevicePage = observer(() => {
     [],
   );
 
-  useEffect(() => {
+  useEffect(() => { 
     fetchOneDevice(id).then(device => setDevice(device));
-    fetchBasketDevicesCallback();
+    if(userStore.currentUser) fetchBasketDevicesCallback();
   }, []);
 
 
@@ -67,8 +67,10 @@ const DevicePage = observer(() => {
                 <Button 
                   variant={"outline-dark"} 
                   onClick={async (e) => {
-                    await addDeviceToBasket({userId: userStore.currentUser.id, deviceId: device.id});
-                    fetchBasketDevicesCallback();
+                    if(userStore.currentUser) {
+                      await addDeviceToBasket({userId: userStore.currentUser.id, deviceId: device.id});
+                      fetchBasketDevicesCallback();
+                    } else alert("Щоб додати річ у кошик - авторизуйтесь.")
                   }}>
                   Додати у кошик
                 </Button>
