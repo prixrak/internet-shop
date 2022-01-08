@@ -1,5 +1,5 @@
-import React, {useContext, useEffect} from 'react';
-import { Alert, Col, Container, Row } from 'react-bootstrap';
+import React, {useContext, useEffect, useState} from 'react';
+import { Alert, Col, Container, Row, Spinner } from 'react-bootstrap';
 import BrandBar from '../components/BrandBar';
 import DeviceList from '../components/DeviceList';
 import TypeBar from './../components/TypeBar';
@@ -10,6 +10,7 @@ import Pages from '../components/Pages';
 
 const Shop = observer(() => {
   const {deviceStore, filterStore} = useContext(Context);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTypes().then(types => filterStore.setTypes(types));
@@ -20,9 +21,10 @@ const Shop = observer(() => {
     fetchDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, deviceStore.page, deviceStore.limit).then(data => {
       deviceStore.setDevices(data.rows);
       deviceStore.setTotalCount(data.count);
-    });
+    }).then(() => setLoading(false));
   }, [deviceStore.page, filterStore.selectedType, filterStore.selectedBrand]);
 
+  if(loading) return <Spinner animation={"grow"} />;
   return (
     <Container>
       <Row className="mt-2">

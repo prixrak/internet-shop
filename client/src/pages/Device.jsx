@@ -1,20 +1,34 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
 import bigStar from '../assets/bigStar.png'
 import { fetchOneDevice } from './../http/deviceAPI';
 import { useParams } from 'react-router-dom';
 import { Context } from './../index';
-import { addDeviceToBasket } from '../http/basketAPI';
+import { addDeviceToBasket, deleteFromBasket } from '../http/basketAPI';
+import { fetchBasketDevices } from './../http/basketAPI';
+import { observer } from 'mobx-react-lite';
 
-const DevicePage = () => {
+const DevicePage = observer(() => {
   const [device, setDevice] = useState({info: []});
   const { id } = useParams();
-  const {userStore} = useContext(Context);
+  const {userStore, basketStore} = useContext(Context);
+  
+  const fetchBasketDevicesCallback = useCallback(
+    () => {
+      fetchBasketDevices(null, null, null, -1).then(data => {
+        basketStore.setTotalCount(data.count);
+        basketStore.setDevices(data.rows);
+      });
+    },
+    [],
+  );
 
   useEffect(() => {
-    fetchOneDevice(id).then(device => setDevice(device))
+    fetchOneDevice(id).then(device => setDevice(device));
+    fetchBasketDevicesCallback();
   }, []);
-  
+
+
   return (
     <Container className="mt-3">
       <Row>
@@ -38,7 +52,27 @@ const DevicePage = () => {
             style={{ width: 300, height: 300, fontSize: 32, border: '5px solid lightgray' }}
           >
             <h3>Від: {device.price} грн.</h3>
-            <Button variant={"outline-dark"} onClick={(e) => addDeviceToBasket({userId: userStore.currentUser.id, deviceId: device.id}) }>Додати у кошик</Button>
+            {basketStore.devices.some((d) => d.id === device.id)
+              ?
+                <Button 
+                  variant={"outline-dark"} 
+                  onClick={async (e) => {
+                    await deleteFromBasket({userId: userStore.currentUser.id, deviceId: device.id});
+                    fetchBasketDevicesCallback();
+                  }}>
+                  Видалити з кошику
+                </Button>
+              :
+                <Button 
+                  variant={"outline-dark"} 
+                  onClick={async (e) => {
+                    await addDeviceToBasket({userId: userStore.currentUser.id, deviceId: device.id});
+                    fetchBasketDevicesCallback();
+                  }}>
+                  Додати у кошик
+                </Button>
+            }
+
           </Card>
         </Col>
       </Row>
@@ -52,6 +86,6 @@ const DevicePage = () => {
       </Row>
     </Container>
   );
-};
+});
 
 export default DevicePage;
