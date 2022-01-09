@@ -11,17 +11,18 @@ import { useFetching } from './../hooks/useFetching';
 
 const Shop = observer(() => {
   const {deviceStore, filterStore} = useContext(Context);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetchTypes().then(types => filterStore.setTypes(types));
     fetchBrands().then(brands => filterStore.setBrands(brands));
   }, []);
 
-  const [fetchDevicesHook, loading] =  useFetching(() => 
-    fetchDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, deviceStore.page, deviceStore.limit).
-    then(data => {
+  const [fetchDevicesHook] =  useFetching(() => 
+    fetchDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, deviceStore.page, deviceStore.limit)
+    .then(data => {
       deviceStore.setDevices(data.rows);
       deviceStore.setTotalCount(data.count);
+      setLoading(false);
   }));
 
   useEffect(() => {

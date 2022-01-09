@@ -60,7 +60,7 @@ class UserController {
         email
       }
     });
-    if (!user) return next(ApiError.internal('Користувач не знайдений'));
+    if (!user || user == 'null') return next(ApiError.internal('Користувач не знайдений'));
 
     let comparePassword = bcrypt.compareSync(password, user.password);
     if (!comparePassword) return next(ApiError.internal('Вказаний неправильний пароль'));

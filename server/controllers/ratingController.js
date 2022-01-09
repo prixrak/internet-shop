@@ -1,4 +1,4 @@
-const { Rating } = require("../models/models");
+const { Rating, Device } = require("../models/models");
 
 class RatingController {
   async get(req, res) {
@@ -8,19 +8,26 @@ class RatingController {
     return res.json(deviceRateByUser);
   }
 
-  async getAverage(req, res) {
-    const ratesToDevice = await Rating.findAll({where: deviceId});
-  }
-
   async create(req, res) {
     const userId = req.user.id;
-    const {deviceId, rate} = req.body;
-    const deviceRateByUser = await Rating.findOne({userId, deviceId});
-    if(!deviceRateByUser) deviceRateByUser = await Rating.create({userId, deviceId, rate});
+    let {deviceId, rate} = req.body;
+    let deviceRateByUser = await Rating.findOne({where: {userId, deviceId}});
+    if(deviceRateByUser == 'null' || !deviceRateByUser) deviceRateByUser = await Rating.create({userId, deviceId, rate});
     else {
       deviceRateByUser.rate = rate;
       await deviceRateByUser.save();
     }
+
+    // set averate rating to device 
+    let device = await Device.findOne({where: {id: deviceId}});
+    const ratesToDevice = await Rating.findAll({where: {deviceId}});
+    rate = 0;
+    ratesToDevice.forEach(rating => rate += rating.rate);
+    rate /= ratesToDevice.length;
+    rate = Math.round(rate, 1);
+    device.rating = rate;
+    device.save();
+    //
     return res.json(deviceRateByUser);
   }
 }

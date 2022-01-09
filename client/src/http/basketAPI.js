@@ -12,13 +12,10 @@ export const fetchBasketDevices = async (typeId, brandId, page, limit) => {
 
 export const addDeviceToBasket = async (device) => {
   const { data } = await $authHost.post('api/basket/', device);
-  console.log(data)
-
   return data;
 }
 
 export const deleteFromBasket = async (device) => {
   const { data } = await $authHost.delete('api/basket/', { data: device });
-  console.log(data)
   return data;
 }

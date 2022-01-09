@@ -7,7 +7,7 @@ import { fetchBrands, fetchTypes } from '../../http/deviceAPI';
 import { createDevice } from './../../http/deviceAPI';
 
 const CreateDevice = observer(({ show, onHide }) => {
-  const { deviceStore, filterStore } = useContext(Context);
+  const { filterStore } = useContext(Context);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
@@ -59,11 +59,11 @@ const CreateDevice = observer(({ show, onHide }) => {
       <Modal.Body>
         <Form>
           <Dropdown className="mt-2 mb-2">
-            <Dropdown.Toggle>{deviceStore.selectedType.name || "Виберіть тип"}</Dropdown.Toggle>
+            <Dropdown.Toggle>{filterStore.selectedType.name || "Виберіть тип"}</Dropdown.Toggle>
             <Dropdown.Menu>
-              {deviceStore.types.map(type =>
+              {filterStore.types.map(type =>
                 <Dropdown.Item
-                  onClick={() => deviceStore.setSelectedType(type)}
+                  onClick={() => filterStore.setSelectedType(type)}
                   key={type.id}
                 >
                   {type.name}
@@ -72,11 +72,11 @@ const CreateDevice = observer(({ show, onHide }) => {
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown className="mt-2 mb-2">
-            <Dropdown.Toggle>{deviceStore.selectedBrand.name || "Виберіть бренд"}</Dropdown.Toggle>
+            <Dropdown.Toggle>{filterStore.selectedBrand.name || "Виберіть бренд"}</Dropdown.Toggle>
             <Dropdown.Menu>
-              {deviceStore.brands.map(brand =>
+              {filterStore.brands.map(brand =>
                 <Dropdown.Item
-                  onClick={() => deviceStore.setSelectedBrand(brand)}
+                  onClick={() => filterStore.setSelectedBrand(brand)}
                   key={brand.id}
                 >
                   {brand.name}

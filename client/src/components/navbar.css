@@ -1,0 +1,46 @@
+::placeholder { 
+  color: white;
+  opacity: 0.7; 
+}
+
+@keyframes fromLeftToRight {
+  from {
+    width: 0%;
+    visibility: visible;
+  }
+  to {
+    width: 70%;
+    visibility: visible;
+  }
+}
+
+.animated {
+  animation: fromLeftToRight 2s forwards;
+}
+
+.search__icon  {
+  color: white;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.search__input {
+  width: 0%;
+  visibility: hidden;
+  margin-left: 10px;
+  border: 0;
+  border-bottom: 2px solid gray;
+  outline: 0;
+  color: white;
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.search__input:hover {
+  border-color: white;
+}
+
+.search__input:focus {
+  border-color: white;
+
+}

@@ -1,16 +1,21 @@
-import React, {useState, } from 'react';
-import {Card, Col} from "react-bootstrap";
+import React, {useState, useContext} from 'react';
+import { Card, Col} from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import star from '../assets/star.png';
 import {DEVICE_ROUTE} from "../utils/consts";
 import { useNavigate } from 'react-router-dom';
 import AddRateToDevice from './userModals/AddRateToDevice';
+import { fetchDeviceRateByUser } from '../http/ratingApi';
+import { Context } from './../index';
 
 
 const DeviceItem = ({device}) => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-
+  const [rate, setRate] = useState(0);
+  const {userStore} = useContext(Context);
+  
+  
   return (
     <div>
       <Col md={3} className={"mt-3"} onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}>
@@ -20,10 +25,17 @@ const DeviceItem = ({device}) => {
             <div>Samsung...</div>
             <button 
               className="d-flex align-items-center btn btn-light"
-              onClick={(e) => {
-                e.stopPropagation();
-                setVisible(true);
-              }}          
+              onClick={async (e) => {
+                  e.stopPropagation();
+                  if(userStore.currentUser) {
+                    setVisible(true);
+                    // fetch device rate
+                    await fetchDeviceRateByUser(device.id).then(deviceRating => deviceRating ? setRate(deviceRating.rate) : setRate(0));
+                  } else {
+                    alert("Перед тим, як оцінювати товар - потрібно авторизуватись.")
+                  }
+                }
+              }          
             >
               <div className='mr-1'>{device.rating}</div>
               <Image width={18} height={18} src={star} />
@@ -32,7 +44,10 @@ const DeviceItem = ({device}) => {
           <div>{device.name}</div>
         </Card>
       </Col>
-      <AddRateToDevice show={visible} onHide={() => setVisible(false)} deviceId={device.id}/>
+      {userStore.currentUser &&
+        <AddRateToDevice rate={rate} setRate={setRate} show={visible} onHide={() => setVisible(false)} deviceId={device.id}/> 
+      }
+      
     </div>
   );
 };

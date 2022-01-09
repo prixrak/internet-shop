@@ -35,9 +35,7 @@ class BasketController {
 
     if(limit == -1) {
       const basketDevices = await BasketDevice.findAndCountAll({where: {userId}});
-
       const devices = {count: basketDevices.count, rows: []};
-      console.log(basketDevices);
       for (const basketDevice of basketDevices.rows) {
         let device = await Device.findOne({where: {id: basketDevice.deviceId}});
         devices.rows.push(device);
@@ -52,7 +50,6 @@ class BasketController {
     const basketDevices = await BasketDevice.findAndCountAll({where: {userId}, limit: parseInt(limit), offset: parseInt(offset)});
 
     const devices = {count: basketDevices.count, rows: []};
-    console.log(basketDevices);
     for (const basketDevice of basketDevices.rows) {
       let device = await Device.findOne({where: {id: basketDevice.deviceId}});
       devices.rows.push(device);
