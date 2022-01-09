@@ -15,7 +15,7 @@ ReactDOM.render(
     filterStore: new FilterStore(), // store where are saved filter modes 
     basketStore: new BasketStore()
   }}>
-    <App />
+    <App className='App'/>
   </Context.Provider>,
   document.getElementById('root')
 );

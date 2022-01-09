@@ -12,7 +12,7 @@ const DevicePage = observer(() => {
   const [device, setDevice] = useState({info: []});
   const { id } = useParams();
   const {userStore, basketStore} = useContext(Context);
-  
+
   // fetch basket devices by specific user
   const fetchBasketDevicesCallback = useCallback(
     () => {

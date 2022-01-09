@@ -1,11 +1,11 @@
-// const Router = require('express');
-// const basketController = require('../controllers/basketController');
-// const authMiddleware = require('../middleware/authMiddleware');
+const Router = require('express');
+const ratingController = require('../controllers/ratingController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// const router = new Router();
+const router = new Router();
 
-// router.get('/', authMiddleware, basketController.getBasketDevices);
-// router.post('/', authMiddleware, basketController.addDeviceToBasket);
-// router.delete('/', authMiddleware, basketController.delete);
+router.get('/:deviceId', authMiddleware, ratingController.get);
+router.get('/average', ratingController.getAverage);
+router.post('/', authMiddleware, ratingController.create);
 
-// module.exports = router;
+module.exports = router;
