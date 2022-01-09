@@ -6,6 +6,7 @@ export default class FilterStore {
     this._brands = [];
     this._selectedType = {};
     this._selectedBrand = {};
+    this._searchQuery = '';
     makeAutoObservable(this);
   }
 
@@ -21,7 +22,9 @@ export default class FilterStore {
   setSelectedBrand(brand) {
     this._selectedBrand = brand;
   }
-
+  setSearchQuery (searchQuery) {
+    this._searchQuery = searchQuery;
+  }
 
   get types() {
     return this._types;
@@ -34,5 +37,8 @@ export default class FilterStore {
   }
   get selectedBrand() {
     return this._selectedBrand;
+  }
+  get searchQuery() {
+    return this._searchQuery;
   }
 }

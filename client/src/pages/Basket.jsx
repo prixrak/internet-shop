@@ -23,6 +23,13 @@ const Basket = observer(() => {
     fetchBasketDevicesHook();
   }, [basketStore.page, filterStore.selectedType, filterStore.selectedBrand]);
 
+  useEffect(() => {
+    fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit, filterStore.searchQuery)
+    .then(data => {
+      basketStore.setTotalCount(data.count);
+      basketStore.setDevices(data.rows);
+    });
+  }, [filterStore.searchQuery]);
   if(loading) return <Spinner animation={"grow"} />;
 
   return (

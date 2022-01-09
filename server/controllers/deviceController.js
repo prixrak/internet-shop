@@ -2,6 +2,7 @@ const uuid = require('uuid'); // package for generating uniq indentificator
 const path = require('path');
 const {Device, DeviceInfo} = require('../models/models');
 const ApiError = require('../error/ApiError');
+const { Sequelize } = require('../db');
 
 class DeviceController {
     async create(req, res, next) {
@@ -31,16 +32,30 @@ class DeviceController {
     }
 
     async getAll(req, res) {
-        let {brandId, typeId, limit, page} = req.query;
+        let {brandId, typeId, limit, page, name} = req.query;
         page = page || 1;
         limit = limit || 10;
         let offset = page * limit - limit;
         let devices;
-
-        if (!brandId && !typeId) devices = await Device.findAndCountAll({limit: parseInt(limit), offset: parseInt(offset)});
-        if (brandId && !typeId) devices = await Device.findAndCountAll({where:{brandId}, limit: parseInt(limit), offset: parseInt(offset)});
-        if (!brandId && typeId) devices = await Device.findAndCountAll({where:{typeId}, limit: parseInt(limit), offset: parseInt(offset)});
-        if (brandId && typeId) devices = await Device.findAndCountAll({where:{typeId, brandId}, limit: parseInt(limit), offset: parseInt(offset)});
+        if(name && name !== '') {
+            if (!brandId && !typeId) devices = await Device.findAndCountAll({
+                where:{name: Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE', '%' + name.toLowerCase() + '%')}, 
+                limit: parseInt(limit), offset: parseInt(offset)});
+            if (brandId && !typeId) devices = await Device.findAndCountAll({where:{brandId, 
+                name: Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE', '%' + name.toLowerCase() + '%')},
+                 limit: parseInt(limit), offset: parseInt(offset)});
+            if (!brandId && typeId) devices = await Device.findAndCountAll({where:{typeId,
+                name: Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE', '%' + name.toLowerCase() + '%')},
+                limit: parseInt(limit), offset: parseInt(offset)});
+            if (brandId && typeId) devices = await Device.findAndCountAll({where:{typeId, brandId,
+                 name: Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE', '%' + name.toLowerCase() + '%')},
+                  limit: parseInt(limit), offset: parseInt(offset)});
+        } else {
+            if (!brandId && !typeId) devices = await Device.findAndCountAll({limit: parseInt(limit), offset: parseInt(offset)});
+            if (brandId && !typeId) devices = await Device.findAndCountAll({where:{brandId}, limit: parseInt(limit), offset: parseInt(offset)});
+            if (!brandId && typeId) devices = await Device.findAndCountAll({where:{typeId}, limit: parseInt(limit), offset: parseInt(offset)});
+            if (brandId && typeId) devices = await Device.findAndCountAll({where:{typeId, brandId}, limit: parseInt(limit), offset: parseInt(offset)});
+        }
         
         return res.json(devices);
     }

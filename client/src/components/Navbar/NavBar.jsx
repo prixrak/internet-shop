@@ -1,17 +1,16 @@
 import React, {useContext, useRef} from 'react';
-import {Context} from "../index";
+import {Context} from "../../index";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import {NavLink, useNavigate} from "react-router-dom";
-import {ADMIN_ROLE, ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE} from "../utils/consts";
-import {Button, FormControl, Form} from "react-bootstrap";
+import {ADMIN_ROLE, ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, BASKET_ROUTE} from "../../utils/consts";
+import {Button} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import Container from "react-bootstrap/Container";
-import { BASKET_ROUTE } from './../utils/consts';
 import './navbar.css';
 
 const NavBar = observer(() => {
-  const {userStore} = useContext(Context);
+  const {userStore, filterStore} = useContext(Context);
   const navigate = useNavigate();
   const search = useRef(null);
 
@@ -22,15 +21,19 @@ const NavBar = observer(() => {
   }
 
   return (
-    <Navbar  bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark">
       <Container>
         <NavLink style={{ color: 'white', textDecoration:'none' }} to={SHOP_ROUTE}><i className="fab fa-shopify mr-1"></i>КупиУнас</NavLink>
-        <form className="search">
+        <div className="search">
           <div className="search__wrapper">
             <i className="fas fa-search search__icon" onClick={() => search?.current?.classList.toggle('animated')}></i>
-            <input type="text" name="" placeholder="Шукаю..." className="search__input" ref={search} />
+            <input 
+              value={filterStore.searchQuery} 
+              onChange={(e) => filterStore.setSearchQuery(e.target.value)} 
+              type="text" name="" placeholder="Шукаю..." className="search__input" ref={search} 
+            />
           </div>
-        </form>
+        </div>
         {userStore.currentUser &&
           <Nav className='ml-auto' style={{ color: 'white' }}>
             {userStore.currentUser.role === ADMIN_ROLE &&

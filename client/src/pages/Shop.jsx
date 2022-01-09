@@ -7,30 +7,27 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '..';
 import { fetchBrands, fetchDevices, fetchTypes } from '../http/deviceAPI';
 import Pages from '../components/Pages';
-import { useFetching } from './../hooks/useFetching';
 
 const Shop = observer(() => {
   const {deviceStore, filterStore} = useContext(Context);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetchTypes().then(types => filterStore.setTypes(types));
     fetchBrands().then(brands => filterStore.setBrands(brands));
   }, []);
 
-  const [fetchDevicesHook] =  useFetching(() => 
-    fetchDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, deviceStore.page, deviceStore.limit)
+  useEffect(() => {
+    fetchDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, deviceStore.page, deviceStore.limit, filterStore.searchQuery)
     .then(data => {
       deviceStore.setDevices(data.rows);
       deviceStore.setTotalCount(data.count);
       setLoading(false);
-  }));
+    });
+  }, [deviceStore.page, filterStore.selectedType, filterStore.selectedBrand, filterStore.searchQuery]);
 
-  useEffect(() => {
-    fetchDevicesHook();
-  }, [deviceStore.page, filterStore.selectedType, filterStore.selectedBrand]);
 
   if(loading) return <Spinner animation={"grow"} />;
-  
   return (
     <Container>
       <Row className="mt-2">

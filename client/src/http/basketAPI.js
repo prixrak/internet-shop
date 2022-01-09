@@ -1,11 +1,12 @@
 import { $authHost } from "./index";
 
-export const fetchBasketDevices = async (typeId, brandId, page, limit) => {
+export const fetchBasketDevices = async (typeId, brandId, page, limit, name) => {
   const { data } = await $authHost.get('api/basket/', {params: {
     typeId,
     brandId,
     page,
-    limit
+    limit,
+    name
   }});
   return data;
 }

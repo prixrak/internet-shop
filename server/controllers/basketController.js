@@ -31,7 +31,7 @@ class BasketController {
 
   async getBasketDevices(req, res) {
     const userId = req.user.id;
-    let {limit, page} = req.query;
+    let {limit, page, name} = req.query;
 
     if(limit == -1) {
       const basketDevices = await BasketDevice.findAndCountAll({where: {userId}});
