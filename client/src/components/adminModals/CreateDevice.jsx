@@ -1,22 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Modal from "react-bootstrap/Modal";
 import { Button, Dropdown, Form, Row, Col } from "react-bootstrap";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
-import { fetchBrands, fetchTypes } from '../../http/deviceAPI';
 import { createDevice } from './../../http/deviceAPI';
 
 const CreateDevice = observer(({ show, onHide }) => {
-  const { filterStore } = useContext(Context);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
   const [info, setInfo] = useState([]);
-
-  useEffect(() => {
-    fetchTypes().then(types => filterStore.setTypes(types))
-    fetchBrands().then(brands => filterStore.setBrands(brands))
-  }, []);
+  
+  const { filterStore } = useContext(Context);
 
   const addInfo = () => {
     setInfo([...info, { title: '', description: '', number: Date.now() }])

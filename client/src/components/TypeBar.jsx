@@ -5,6 +5,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 
 const TypeBar = observer(() => {
     const {filterStore} = useContext(Context);
+    
     return (
       <ListGroup>
         {filterStore.types.map(type =>
