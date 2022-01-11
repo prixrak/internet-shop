@@ -24,6 +24,7 @@ class UserController {
       password,
       role
     } = req.body;
+
     if (!email || !password) return next(ApiError.badRequest('Некоректний email або password'));
 
     const candidate = await User.findOne({
@@ -38,10 +39,6 @@ class UserController {
       email,
       role,
       password: hashPassword
-    });
-
-    const basket = await Basket.create({
-      userId: user.id
     });
 
     const token = generateJwt(user.id, user.email, user.role);

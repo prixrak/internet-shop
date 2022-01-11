@@ -26,7 +26,10 @@ const NavBar = observer(() => {
         <NavLink style={{ color: 'white', textDecoration:'none' }} to={SHOP_ROUTE}><i className="fab fa-shopify mr-1"></i>КупиУнас</NavLink>
         <div className="search">
           <div className="search__wrapper">
-            <i className="fas fa-search search__icon" onClick={() => search?.current?.classList.toggle('animated')}></i>
+            <i className="fas fa-search search__icon" 
+              onMouseOver={() => search?.current?.classList.toggle('animated')}
+            >
+            </i>
             <input 
               value={filterStore.searchQuery} 
               onChange={(e) => filterStore.setSearchQuery(e.target.value)} 
@@ -34,6 +37,7 @@ const NavBar = observer(() => {
             />
           </div>
         </div>
+        
         {userStore.currentUser &&
           <Nav className='ml-auto' style={{ color: 'white' }}>
             {userStore.currentUser.role === ADMIN_ROLE &&

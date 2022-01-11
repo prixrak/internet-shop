@@ -1,0 +1,34 @@
+.inputFile {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  height: 150px;
+}
+
+.dropArea {
+  position: relative;
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+  line-height: 150px;
+  border: 2px dashed;
+  height: 150px;
+  box-shadow: 4px 6px 3px gray,
+  -2px -4px 3px gray
+}
+
+@keyframes scaleText {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.fileText {
+  animation: scaleText 3s infinite;
+}

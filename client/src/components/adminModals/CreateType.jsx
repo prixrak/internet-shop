@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Modal from "react-bootstrap/Modal";
 import { Form, Button } from "react-bootstrap";
-import { createType, deleteType } from './../../http/deviceAPI';
+import { createType, deleteType, fetchTypes } from './../../http/deviceAPI';
 import { Context } from './../../index';
 import  ButtonGroup  from 'react-bootstrap/ButtonGroup';
 import { observer } from 'mobx-react-lite';
@@ -11,8 +11,9 @@ const CreateType = observer(({ show, onHide }) => {
 
   const addType = () => {
     createType({name: value}).then(data => {
-        setValue('');
-        onHide();
+      setValue('');
+      onHide();
+      fetchTypes().then(types => filterStore.setBrands(types));
     })
   }
 

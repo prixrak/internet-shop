@@ -1,0 +1,19 @@
+@keyframes alertAnimationOpacity {
+  from {
+    opacity: 0;
+  }
+  50% {
+    opacity: 100;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.alertCustom {
+  animation: alertAnimationOpacity 2s ease-out forwards;
+}
+
+input:invalid {
+  border: 2px solid red;
+}

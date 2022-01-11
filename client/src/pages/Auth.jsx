@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Container, Form } from "react-bootstrap";
+import React, { useContext, useMemo, useState } from 'react';
+import { Alert, Container, Form } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -9,6 +9,7 @@ import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { registration, login } from './../http/userAPI';
 import { useNavigate } from 'react-router-dom';
+import '../styles/alert.css';
 
 const Auth = observer(() => {
   const { userStore } = useContext(Context);
@@ -17,18 +18,41 @@ const Auth = observer(() => {
   const navigate = useNavigate();
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
+  const [showAlert, setShowAlert] = useState({
+    show: false,
+    message: ''
+  });
+  
+  const isEmailValid = useMemo(() => {
+    let validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return email?.match(validRegex) ? true : false;
+  }, [email]);
 
   const auth = async () => {
     try {
       let user;
-      if (isLoginRoute) user = await login(email, password);
-      else user = await registration(email, password);
-      userStore.setCurrentUser(user);
-      navigate(SHOP_ROUTE);
+      if(isEmailValid) {
+        if (isLoginRoute) user = await login(email, password);
+        else user = await registration(email, password);
+        userStore.setCurrentUser(user);
+        navigate(SHOP_ROUTE);
+      } else {
+        setShowAlert({
+          show: true,
+          message: 'Емейл введений неправильно'
+        });
+        setTimeout(() => {
+          setShowAlert({show: false, message: ''});
+        }, 2000);
+      }
     } catch (e) {
-      alert(e.response.data.message);
+      setShowAlert({show: true, message: e.response.data.message});
+      setTimeout(() => {
+        setShowAlert({show: false, message: ''});
+      }, 2000);
     }
   }
+
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
@@ -42,7 +66,10 @@ const Auth = observer(() => {
             placeholder="Введіть ваш мейл..."
             type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={async e => {
+                await setEmail(e.target.value);
+              }
+            }
           />
           <Form.Control
             className="mt-3"
@@ -69,6 +96,9 @@ const Auth = observer(() => {
             </Button>
           </Row>
         </Form>
+        {showAlert.show &&
+          <Alert variant="danger" className='mt-2 alertCustom'>{showAlert.message}</Alert>
+        }
       </Card>
     </Container>
   );

@@ -4,6 +4,7 @@ import { Button, Dropdown, Form, Row, Col } from "react-bootstrap";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 import { createDevice } from './../../http/deviceAPI';
+import '../../styles/dropFile.css';
 
 const CreateDevice = observer(({ show, onHide }) => {
   const [name, setName] = useState('');
@@ -26,7 +27,7 @@ const CreateDevice = observer(({ show, onHide }) => {
   }
 
   const selectFile = e => {
-    setFile(e.target.files[0])
+    setFile(e?.target.files[0]);
   }
 
   const addDevice = () => {
@@ -92,11 +93,29 @@ const CreateDevice = observer(({ show, onHide }) => {
             placeholder="Введіть вартісь пристрою"
             type="number"
           />
-          <Form.Control
-            className="mt-3"
+          <Form.Label 
             type="file"
-            onChange={selectFile}
-          />
+            htmlFor="files"
+            className='dropArea'
+          >
+            {file === null
+              ? <div className='fileText'>Drag and Drop or Choose File</div>
+              : <div className=''>Вибраний файл: {file?.name}</div>
+            }
+            <Form.Control
+              id="files"
+              className="mt-3 inputFile"
+              type="file"
+              onChange={selectFile}
+              accept="image/*"
+              onDrop={e => {
+                  e.preventDefault();
+                  e.target.files = e.dataTransfer.files;
+                  selectFile(e);
+                }
+              }
+            />
+          </Form.Label>
           <hr />
           <Button
             variant={"outline-dark"}
