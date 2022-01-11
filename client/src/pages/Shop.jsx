@@ -5,7 +5,9 @@ import DeviceList from '../components/DeviceList';
 import TypeBar from './../components/TypeBar';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
-import { fetchBrands, fetchDevices, fetchTypes } from '../http/deviceAPI';
+import { fetchDevices } from '../http/deviceAPI';
+import { fetchBrands, fetchTypes } from '../http/filterAPI';
+
 import Pages from '../components/Pages';
 
 const Shop = observer(() => {

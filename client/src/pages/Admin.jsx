@@ -3,7 +3,7 @@ import { Button, Container } from "react-bootstrap";
 import CreateBrand from "../components/adminModals/CreateBrand";
 import CreateDevice from "../components/adminModals/CreateDevice";
 import CreateType from "../components/adminModals/CreateType";
-import { fetchBrands, fetchTypes } from '../http/deviceAPI';
+import { fetchBrands, fetchTypes } from '../http/filterAPI';
 import { Context } from './../index';
 
 const Admin = () => {

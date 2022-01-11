@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Modal from "react-bootstrap/Modal";
 import { Button, Form } from "react-bootstrap";
-import { createBrand, deleteBrand, fetchBrands } from './../../http/deviceAPI';
+import { createBrand, deleteBrand, fetchBrands } from './../../http/filterAPI';
 import { Context } from './../../index';
 import  ButtonGroup  from 'react-bootstrap/ButtonGroup';
 import { observer } from 'mobx-react-lite';
@@ -13,7 +13,6 @@ const CreateBrand = observer(({ show, onHide }) => {
   const addBrand = () => {
     createBrand({ name: value }).then(data => {
       setValue('');
-      onHide();
       fetchBrands().then(brands => filterStore.setBrands(brands));
     })
   }

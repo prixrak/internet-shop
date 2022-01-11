@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
 import Modal from "react-bootstrap/Modal";
 import { Form, Button } from "react-bootstrap";
-import { createType, deleteType, fetchTypes } from './../../http/deviceAPI';
+import { createType, deleteType, fetchTypes } from './../../http/filterAPI';
 import { Context } from './../../index';
 import  ButtonGroup  from 'react-bootstrap/ButtonGroup';
 import { observer } from 'mobx-react-lite';
+
 const CreateType = observer(({ show, onHide }) => {
   const [value, setValue] = useState('')
   const { filterStore } = useContext(Context);
@@ -12,8 +13,7 @@ const CreateType = observer(({ show, onHide }) => {
   const addType = () => {
     createType({name: value}).then(data => {
       setValue('');
-      onHide();
-      fetchTypes().then(types => filterStore.setBrands(types));
+      fetchTypes().then(types => filterStore.setTypes(types));
     })
   }
 
