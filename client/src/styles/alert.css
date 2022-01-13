@@ -14,6 +14,18 @@
   animation: alertAnimationOpacity 2s ease-out forwards;
 }
 
+.tinyAlert {
+  width: 80%;
+  font-size: 14px;
+}
+
+.alertTop {
+  position: absolute;
+  animation: alertAnimationOpacity 2s ease-out forwards;
+  z-index: 1;
+  left: 300px;
+}
+
 input:invalid {
   border: 2px solid red;
 }

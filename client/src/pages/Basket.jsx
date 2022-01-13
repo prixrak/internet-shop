@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { fetchBasketDevices } from '../http/basketAPI'
 import { Alert, Container, Spinner } from 'react-bootstrap';
 
@@ -14,6 +14,7 @@ const Basket = observer(() => {
   const [fetchBasketDevicesHook, loading] =  useFetching(() => 
     fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit)
     .then(data => {
+      console.log(data.rows)
       basketStore.setTotalCount(data.count);
       basketStore.setDevices(data.rows);
     })
@@ -23,22 +24,17 @@ const Basket = observer(() => {
     fetchBasketDevicesHook();
   }, [basketStore.page, filterStore.selectedType, filterStore.selectedBrand]);
 
-  useEffect(() => {
-    fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit, filterStore.searchQuery)
-    .then(data => {
-      basketStore.setTotalCount(data.count);
-      basketStore.setDevices(data.rows);
-    });
-  }, [filterStore.searchQuery]);
+  console.log(basketStore.devices.length)
   if(loading) return <Spinner animation={"grow"} />;
-
   return (
     <Container>
       {basketStore.devices.length
-        ? <DeviceList devices={basketStore.devices}/>
+        ? <React.Fragment>
+            <DeviceList devices={basketStore.devices}/>
+            <Pages store={basketStore}/> 
+          </React.Fragment>
         : <Alert className='info mt-2'>Ваша корзина пуста</Alert>
       }
-      <Pages store={basketStore}/> 
     </Container>
   );
 });

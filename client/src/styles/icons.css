@@ -1,0 +1,4 @@
+.deleteIcon:hover {
+  transform: scale(1.1);
+  color: rgb(0, 0, 0)
+}

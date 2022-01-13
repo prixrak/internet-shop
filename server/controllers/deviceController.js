@@ -70,6 +70,18 @@ class DeviceController {
         );
         return res.json(device);
     }
+
+    async delete(req, res) {
+        const {id} = req.body; // get obj with data from req.body
+        const deletedDevice = await Device.destroy({
+          where: {
+            id
+          },
+          force: true
+        });
+        
+        return res.json(deletedDevice);
+    }
 }
 
 module.exports = new DeviceController();

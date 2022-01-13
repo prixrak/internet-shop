@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Container, Image, Row } from "react-bootstrap";
 import bigStar from '../assets/bigStar.png'
 import { fetchOneDevice } from './../http/deviceAPI';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,10 @@ const DevicePage = observer(() => {
   const [device, setDevice] = useState({info: []});
   const { id } = useParams();
   const {userStore, basketStore} = useContext(Context);
-
+  const [showAlert, setShowAlert] = useState({
+    show: false,
+    message: ''
+  });
   // fetch basket devices by specific user
   const fetchBasketDevicesCallback = useCallback(
     () => {
@@ -31,7 +34,7 @@ const DevicePage = observer(() => {
 
 
   return (
-    <Container className="mt-3">
+    <Container className="mt-3" style={{position: 'relative'}}>
       <Row>
         <Col md={4}>
           <Image width={300} height={300} src={process.env.REACT_APP_API_URL + device.img} />
@@ -53,7 +56,7 @@ const DevicePage = observer(() => {
             style={{ width: 300, height: 300, fontSize: 32, border: '5px solid lightgray' }}
           >
             <h3>Від: {device.price} грн.</h3>
-            {basketStore.devices.some((d) => d.id === device.id)
+            {basketStore.devices.some((d) => d?.id === device.id)
               ?
                 <Button 
                   variant={"outline-dark"} 
@@ -70,12 +73,21 @@ const DevicePage = observer(() => {
                     if(userStore.currentUser) {
                       await addDeviceToBasket({userId: userStore.currentUser.id, deviceId: device.id});
                       fetchBasketDevicesCallback();
-                    } else alert("Щоб додати річ у кошик - авторизуйтесь.")
+                    } else {
+                      if(showAlert.show !== true) {
+                        setShowAlert({show: true, message: 'Щоб додати річ у кошик - авторизуйтесь.'});
+                        setTimeout(() => {
+                          setShowAlert({show: false, message: ''});
+                        }, 2000);
+                      }
+                    }
                   }}>
                   Додати у кошик
                 </Button>
             }
-
+            {showAlert.show &&
+              <Alert variant="danger" className='mt-2 alertCustom tinyAlert'>{showAlert.message}</Alert>
+            }
           </Card>
         </Col>
       </Row>

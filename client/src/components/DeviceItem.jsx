@@ -7,15 +7,19 @@ import { useNavigate } from 'react-router-dom';
 import AddRateToDevice from './userModals/AddRateToDevice';
 import { fetchDeviceRateByUser } from '../http/ratingApi';
 import { Context } from './../index';
+import { ADMIN_ROLE } from './../utils/consts';
+import '../styles/icons.css'
+import { deleteDevice } from '../http/deviceAPI';
+import { observer } from 'mobx-react-lite';
+import { useFetchingDevices } from '../hooks/useFetchingDevices';
 
-
-const DeviceItem = ({device}) => {
+const DeviceItem = observer(({device, setShowAlert}) => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const [rate, setRate] = useState(0);
-  const {userStore} = useContext(Context);
-  
-  
+  const { userStore } = useContext(Context);
+  const fetchDevicesHook = useFetchingDevices();
+
   return (
     <div>
       <Col md={3} className={"mt-3"} onClick={() => navigate(DEVICE_ROUTE + '/' + device.id)}>
@@ -32,7 +36,13 @@ const DeviceItem = ({device}) => {
                     // fetch device rate
                     await fetchDeviceRateByUser(device.id).then(deviceRating => deviceRating ? setRate(deviceRating.rate) : setRate(0));
                   } else {
-                    alert("Перед тим, як оцінювати товар - потрібно авторизуватись.")
+                    setShowAlert({
+                      show: true,
+                      message: 'Перед тим, як оцінювати товар - потрібно авторизуватись.'
+                    });
+                    setTimeout(() => {
+                      setShowAlert({show: false, message: ''});
+                    }, 2000);
                   }
                 }
               }          
@@ -40,6 +50,13 @@ const DeviceItem = ({device}) => {
               <div className='mr-1'>{device.rating}</div>
               <Image width={18} height={18} src={star} />
             </button>
+            {userStore.currentUser?.role === ADMIN_ROLE && setShowAlert &&
+              <i className="fas fa-trash-alt mt-1 deleteIcon" onClick={async (e) => { 
+                e.stopPropagation();
+                await deleteDevice(device.id);
+                fetchDevicesHook();
+              }}></i>
+            }
           </div>
           <div>{device.name}</div>
         </Card>
@@ -50,6 +67,6 @@ const DeviceItem = ({device}) => {
       
     </div>
   );
-};
+});
 
 export default DeviceItem;

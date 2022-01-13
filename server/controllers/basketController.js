@@ -48,13 +48,12 @@ class BasketController {
     let offset = page * limit - limit;  
 
     const basketDevices = await BasketDevice.findAndCountAll({where: {userId}, limit: parseInt(limit), offset: parseInt(offset)});
-
     const devices = {count: basketDevices.count, rows: []};
+
     for (const basketDevice of basketDevices.rows) {
       let device = await Device.findOne({where: {id: basketDevice.deviceId}});
-      devices.rows.push(device);
+      if(device) devices.rows.push(device);
     }
-
     return res.json(devices);
   }
 }
