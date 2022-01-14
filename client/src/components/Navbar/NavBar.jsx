@@ -1,4 +1,4 @@
-import React, {useContext, useRef} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {Context} from "../../index";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -8,17 +8,24 @@ import {Button} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import Container from "react-bootstrap/Container";
 import './navbar.css';
+import { useDebounce } from './../../hooks/useDebounce';
 
 const NavBar = observer(() => {
   const {userStore, filterStore} = useContext(Context);
   const navigate = useNavigate();
   const search = useRef(null);
 
+  const [searchQueryState, setSearchQueryState] = useState('');
   const logOut = () => {
     navigate(LOGIN_ROUTE);
     userStore.setCurrentUser(null);
     localStorage.removeItem('token');
   }
+  
+  // optimisation
+  const searchQueryDebounce = useDebounce((searchQuery) => {
+    filterStore.setSearchQuery(searchQuery);
+  }, 500);
 
   return (
     <Navbar bg="dark" variant="dark">
@@ -31,9 +38,12 @@ const NavBar = observer(() => {
             >
             </i>
             <input 
-              value={filterStore.searchQuery} 
-              onChange={(e) => filterStore.setSearchQuery(e.target.value)} 
-              type="text" name="" placeholder="Шукаю..." className="search__input" ref={search} 
+              value={searchQueryState} 
+              onChange={(e) => {
+                setSearchQueryState(e.target.value);
+                searchQueryDebounce(e.target.value);
+              }} 
+              type="text" name="" placeholder="Шукаю.." className="search__input" ref={search} 
             />
           </div>
         </div>
