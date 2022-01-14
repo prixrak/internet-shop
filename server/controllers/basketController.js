@@ -1,6 +1,4 @@
-const { BasketDevice, User, Device } = require('../models/models');
-const ApiError = require('../error/ApiError');
-
+const { BasketDevice, Device } = require('../models/models');
 class BasketController {
   async addDeviceToBasket(req, res) {
     const {userId, deviceId} = req.body; // get obj with data from req.body
@@ -12,6 +10,7 @@ class BasketController {
         }
       },
     );
+    console.log("[+] basket ", basketDevice)
     return res.json(basketDevice);
   }
 
@@ -31,7 +30,7 @@ class BasketController {
 
   async getBasketDevices(req, res) {
     const userId = req.user.id;
-    let {limit, page, name} = req.query;
+    let {limit, page} = req.query;
 
     if(limit == -1) {
       const basketDevices = await BasketDevice.findAndCountAll({where: {userId}});
@@ -47,6 +46,7 @@ class BasketController {
     limit = limit || 10;
     let offset = page * limit - limit;  
 
+    
     const basketDevices = await BasketDevice.findAndCountAll({where: {userId}, limit: parseInt(limit), offset: parseInt(offset)});
     const devices = {count: basketDevices.count, rows: []};
 

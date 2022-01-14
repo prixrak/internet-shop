@@ -57,13 +57,13 @@ Device.belongsTo(Type)
 Brand.hasMany(Device)
 Device.belongsTo(Brand)
 
-Device.hasMany(Rating)
+Device.hasMany(Rating, { onDelete: 'cascade', hooks:true })
 Rating.belongsTo(Device)
 
-Device.hasMany(BasketDevice)
+Device.hasMany(BasketDevice, { onDelete: 'cascade', hooks:true })
 BasketDevice.belongsTo(Device)
 
-Device.hasMany(DeviceInfo, {as: 'info'});
+Device.hasMany(DeviceInfo, {as: 'info'}, { onDelete: 'cascade', hooks:true });
 DeviceInfo.belongsTo(Device)
 
 Type.belongsToMany(Brand, {through: TypeBrand })

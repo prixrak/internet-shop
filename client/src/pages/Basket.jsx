@@ -14,7 +14,6 @@ const Basket = observer(() => {
   const [fetchBasketDevicesHook, loading] =  useFetching(() => 
     fetchBasketDevices(filterStore.selectedType.id, filterStore.selectedBrand.id, basketStore.page, basketStore.limit)
     .then(data => {
-      console.log(data.rows)
       basketStore.setTotalCount(data.count);
       basketStore.setDevices(data.rows);
     })
@@ -24,7 +23,6 @@ const Basket = observer(() => {
     fetchBasketDevicesHook();
   }, [basketStore.page, filterStore.selectedType, filterStore.selectedBrand]);
 
-  console.log(basketStore.devices.length)
   if(loading) return <Spinner animation={"grow"} />;
   return (
     <Container>

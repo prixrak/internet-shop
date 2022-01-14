@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
-import { Pagination } from 'react-bootstrap';
+import { Pagination, Spinner } from 'react-bootstrap';
 
-const Pages = observer(({store}) => {
+const Pages = observer(({store, loading}) => {
   const pageCount = Math.ceil(store.totalCount / store.limit)
   const pages = []
   for (let i = 0; i < pageCount; i++) pages.push(i + 1);
@@ -18,6 +18,8 @@ const Pages = observer(({store}) => {
           {page}
         </Pagination.Item>
       )}
+      {loading && <Spinner animation={"grow"} />}
+
     </Pagination>
   );
 });
